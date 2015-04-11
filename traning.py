@@ -1,5 +1,6 @@
 N = 28
 
+
 class Training():
     def __init__(self):
         pass
@@ -48,29 +49,43 @@ class Training():
             print
         print
 
+    def per_correct(self, training, matrixes, answer):
+        correct = 0
+        for matrix in matrixes:
+            correct += 1 if self.min_diff(training, matrix) == answer else 0
+        if len(matrixes) == 0:
+            return
+
+        return 1.0 * correct / len(matrixes)
 
 
-with open('data/simple.csv', 'r') as train, open('data/test.csv', 'r') as test, open('data/result.csv','w') as w:
+with open('data/simple.csv', 'r') as train, open('data/test.csv', 'r') as test, open('data/result.csv', 'w') as w:
     train.readline()
     data = [[] for i in xrange(10)]
     for line in train:
         l = map(int, line.split(','))
         data[l[0]].append(l[1:])
 
+    train_len = 50
     train = Training()
-    average = [train.avg(data[i]) for i in xrange(10)]
+    average = [train.avg(data[i][:train_len]) for i in xrange(10)]
 
-    test.readline()
-    w.write('ImageId,Label\n')
-
-    for i, line in enumerate(test):
-        matrix = map(int, line.split(','))
-        result = train.min_diff(average, matrix)
-        print '{},{}'.format(i+1, result)
-        w.write('{},{}\n'.format(i+1, result))
+    for i in xrange(10):
+        print i, '',int(train.per_correct(average, data[i][train_len:], i) * 100), "%"
 
 
-
+        #
+        # test.readline()
+        # w.write('ImageId,Label\n')
+        #
+        # for i, line in enumerate(test):
+        # matrix = map(int, line.split(','))
+        #     result = train.min_diff(average, matrix)
+        #     print '{},{}'.format(i+1, result)
+        #     w.write('{},{}\n'.format(i+1, result))
+        #
+        #
+        #
 
 
 
